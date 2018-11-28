@@ -9,8 +9,7 @@ OSVersion: xenial
     APPLICATION_URL https://www.tensorflow.org
 
     SYSTEM_NAME comet
-    SYSTEM_SINGULARITY_VERSION 2.5.2
-    SYSTEM_URL http://www.sdsc.edu/support/user_guides/comet.html
+    SYSTEM_SINGULARITY_VERSION 3.0    
 
     SINGULARITY_IMAGE_SIZE 32768
 
@@ -271,19 +270,24 @@ OSVersion: xenial
     wget https://github.com/bazelbuild/bazel/releases/download/0.17.2/bazel_0.17.2-linux-x86_64.deb
     dpkg -i bazel_0.17.2-linux-x86_64.deb
 
-    # Install TensorFlow python(2) dependencies
-    apt-get -y install python
-    apt-get -y install python-dev
-    apt-get -y install python-pip
-    apt-get -y install python-six
-    apt-get -y install python-wheel
-    apt-get -y install python-enum34
-    apt-get -y install python-mock
-    apt-get -y install python-numpy
-
-    pip install keras_applications==1.0.5 --no-deps
-    pip install keras_preprocessing==1.0.3 --no-deps
-
+    # Install TensorFlow python(3) dependencies
+    apt-get -y install python3.6
+    apt-get -y install python3.6-dev
+    apt-get -y install python3.6-pip
+    apt-get -y install python3.6-six
+    apt-get -y install python3.6-wheel
+    apt-get -y install python3.6-enum34
+    apt-get -y install python3.6-mock
+    apt-get -y install python3.6-numpy
+    
+     
+    pip3 install keras_applications==1.0.5 --no-deps
+    pip3 install keras_preprocessing==1.0.3 --no-deps
+       
+    # Test python and pip installation
+    python3 --version
+    pip3 --version
+    
     cd /opt
 
     # Download TensorFlow source
@@ -291,13 +295,13 @@ OSVersion: xenial
     cd /opt/tensorflow
     git checkout r1.11
 
-    # Build and install TensorFlow for python(2)
+    # Build and install TensorFlow for python(3)
     echo '#!/usr/bin/expect -f' > install-tensorflow-python.exp
     echo 'spawn ./configure' >> install-tensorflow-python.exp
     echo 'expect "Please specify the location of python. \[Default is /usr/bin/python\]: "' >> install-tensorflow-python.exp
     echo 'send "/usr/bin/python\r"' >> install-tensorflow-python.exp
-    echo 'expect "Please input the desired Python library path to use.  Default is \[/usr/local/lib/python2.7/dist-packages\]\r"' >> install-tensorflow-python.exp
-    echo 'send "/usr/local/lib/python2.7/dist-packages\r"' >> install-tensorflow-python.exp
+    echo 'expect "Please input the desired Python library path to use.  Default is \[/usr/local/lib/python3.6/dist-packages\]\r"' >> install-tensorflow-python.exp
+    echo 'send "/usr/local/lib/python3.6/dist-packages\r"' >> install-tensorflow-python.exp
     echo 'expect "Do you wish to build TensorFlow with jemalloc as malloc support? \[Y/n\]: "' >> install-tensorflow-python.exp
     echo 'send "Y\r"' >> install-tensorflow-python.exp
     echo 'expect "Do you wish to build TensorFlow with Google Cloud Platform support? \[Y/n\]: "' >> install-tensorflow-python.exp
@@ -366,10 +370,10 @@ OSVersion: xenial
     bazel build --local_resources 2048,.5,1.0 -c opt --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --config=cuda //tensorflow/tools/pip_package:build_pip_package
     bazel-bin/tensorflow/tools/pip_package/build_pip_package tensorflow_pkg
 
-    pip install tensorflow_pkg/tensorflow-1.11.0-cp27-cp27mu-linux_x86_64.whl
+    pip3 install tensorflow_pkg/tensorflow-1.11.0-cp27-cp27mu-linux_x86_64.whl
 
     # Install common python packages for data science and machine learning applications
-    apt-get -y install python-scipy
+    apt-get -y install python3-scipy
     apt-get -y install python-pandas
     apt-get -y install python-matplotlib
     apt-get -y install ipython
